@@ -1,0 +1,18 @@
+
+EXE     := test
+OBJ_DIR := ./obj
+INCLUDE_DIR := -I../../Include
+
+RM  := rm -rf 
+LD  := g++ 
+CC  := g++ 
+CCFLAG  := -g
+
+$(EXE): $(OBJ_DIR)/*.o
+    $(LD) -o $@ $^
+
+$(OBJ_DIR)/%.o : %.cpp *.h 
+    $(CC) $(CCFLAG) $(INCLUDE_DIR) -o $@ -c $<
+
+clean:
+    $(RM) $(EXE) $(OBJ_DIR)/*.o
