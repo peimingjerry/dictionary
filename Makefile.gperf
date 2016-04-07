@@ -1,0 +1,29 @@
+
+EXE     := test
+OBJ_DIR := ./obj
+INCLUDE_DIR := -I. -I$(OBJ_DIR)
+
+RM  := rm -rf 
+LD  := g++ 
+CC  := g++ 
+CCFLAG  := -g
+GPERF := gperf
+
+HASH_CLASS := dictionary
+LOOKUP_FUNC := searchDict
+HASH_FILE_NAME := dict
+HASH_FILE  := $(addsuffix .gp, $(HASH_FILE_NAME))
+HASH_HEAD_FILE := $(addsuffix .h, $(HASH_FILE_NAME))
+GPERF_OPT := -T -C -L C++ -o -j1 -t -p -H getHash -N $(LOOKUP_FUNC) -Z $(HASH_CLASS) $(HASH_FILE)
+
+$(EXE): $(OBJ_DIR)/main.o
+    $(LD) -o $@ $^
+
+$(OBJ_DIR)/%.o : %.cpp $(OBJ_DIR)/$(HASH_HEAD_FILE)
+    $(CC) $(CCFLAG) $(INCLUDE_DIR) -o $@ -c $<
+
+$(OBJ_DIR)/$(HASH_HEAD_FILE) : $(HASH_FILE)
+    $(GPERF) $(GPERF_OPT) > $@
+
+clean:
+    $(RM) $(EXE) $(OBJ_DIR)/*.o $(OBJ_DIR)/*.h
